@@ -16,14 +16,13 @@ app.get("/", (req, res) => {
 
 /*
   {
-     "messages": [
-         {
+    "messages": [
+        {
            "role": "user",
            "content": "What is Angular?"
         }
       ]
     }
-  }
 */
 
 app.post("/chat", async (req, res) => {
