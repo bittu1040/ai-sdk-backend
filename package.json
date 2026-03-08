@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@ai-sdk/google": "^3.0.43",
     "@ai-sdk/openai": "^3.0.30",
     "ai": "^6.0.97",
     "cors": "^2.8.6",
