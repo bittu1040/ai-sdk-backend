@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "tsx index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,10 +13,17 @@
   "description": "",
   "dependencies": {
     "@ai-sdk/google": "^3.0.43",
-    "@ai-sdk/openai": "^3.0.30",
-    "ai": "^6.0.97",
+    "@ai-sdk/openai": "^3.0.41",
+    "ai": "^6.0.116",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0"
   }
 }
