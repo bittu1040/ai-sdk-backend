@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import chatRouter from './routes/chat.js';
 import agentRouter from './routes/agent.js';
+import router from './routes/backend-api.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,12 @@ app.use('/api', chatRouter);
 app.use('/api', agentRouter);
 
 // ------------------------------------------------------------------
+// Data Routes
+// Mount the data router for tool-accessible data endpoints
+// ------------------------------------------------------------------
+app.use('/api', router);
+
+// ------------------------------------------------------------------
 // Health check
 //
 // POSTMAN TEST:
@@ -47,5 +54,10 @@ app.listen(PORT, () => {
   console.log('   1. POST /api/chat          - Simple chat (no tools)');
   console.log('   2. POST /api/chat/stream   - Streaming chat (no tools)');
   console.log('   3. POST /api/smart-query   - Smart query with AI tool routing ⭐');
-  console.log('   4. GET  /health            - Health check\n');
+  console.log('   4. GET  /api/weather       - Get weather for a city');
+  console.log('   5. GET  /api/time          - Get current time');
+  console.log('   6. GET  /api/user/:id      - Get user info');
+  console.log('   7. GET  /api/posts         - Get blog posts');
+  console.log('   8. GET  /api/products      - Get products catalog');
+  console.log('   9. GET  /health            - Health check\n');
 });

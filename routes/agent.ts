@@ -79,15 +79,36 @@ router.post('/smart-query', async (req, res) => {
     });
 
     // Extract tool calls and results from AI response
-    const toolCalls = result.steps
-      .flatMap(step => step.toolCalls)
-      .filter(Boolean);
+    const toolCalls: any[] = [];
+    const toolResults: any[] = [];
 
-    const toolResults = result.steps
-      .flatMap(step => step.toolResults)
-      .filter(Boolean);
+    // Process all steps to collect tool calls and results
+    for (const step of result.steps) {
+      if (step.toolCalls && step.toolCalls.length > 0) {
+        for (const tc of step.toolCalls) {
+          // Get the parameters object from the tool call
+          const params = (tc as any).input || (tc as any).params || {};
+          toolCalls.push({
+            name: tc.toolName,
+            arguments: params,
+          });
+        }
+      }
+      
+      if (step.toolResults && step.toolResults.length > 0) {
+        for (const tr of step.toolResults) {
+          // Get the output from the tool result
+          const output = (tr as any).output || (tr as any).data || (tr as any).result || '';
+          toolResults.push({
+            name: tr.toolName,
+            result: JSON.stringify(output),
+          });
+        }
+      }
+    }
 
-    console.log(`[Smart Query] Tools used: ${toolCalls.map((tc: any) => tc.toolName).join(', ')}`);
+    console.log(`[Smart Query] Tools used: ${toolCalls.map(tc => tc.name).join(', ')}`);
+    console.log(`[Smart Query] Tool results: ${toolResults.length} received`);
 
     // If we have tool results but no text response, generate a natural language response
     let aiResponse = result.text;
@@ -97,7 +118,7 @@ router.post('/smart-query', async (req, res) => {
       
       // Create a summary of tool results
       const toolResultSummary = toolResults
-        .map((tr: any) => `Tool: ${tr.toolName}\nResult: ${JSON.stringify(tr.result || tr.output, null, 2)}`)
+        .map((tr) => `Tool: ${tr.name}\nResult: ${tr.result}`)
         .join('\n\n');
 
       // Ask AI to format the results into a natural response
@@ -117,14 +138,8 @@ router.post('/smart-query', async (req, res) => {
     res.json({
       query,
       result: aiResponse,
-      toolCalls: toolCalls.map((tc: any) => ({
-        name: tc.toolName,
-        arguments: tc.args,
-      })),
-      toolResults: toolResults.map((tr: any) => ({
-        name: tr.toolName,
-        result: tr.result,
-      })),
+      toolCalls,
+      toolResults,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
